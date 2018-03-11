@@ -1,0 +1,72 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb, amsmath, amsbsy} % simbolitos
+\usepackage{upgreek} % para poner letras griegas sin cursiva
+\usepackage{cancel} % para tachar
+\usepackage{mathdots} % para el comando \iddots
+\usepackage{mathrsfs} % para formato de letra
+\usepackage{stackrel} % para el comando \stackbin
+\usepackage{dsfont} % para conjuntos de números.
+\title{Tarea 1 \\ Programacion Declarativa}
+\author{Palacios Gómez Esnesto Rubén \\ \ Peto Gutierrez Emanuel}
+\begin {document}
+	\maketitle
+	\begin{flushleft}
+	1.-  \\ \ \\
+
+	2. a)
+	\[(f_{2} \;0) \rightarrow_{\beta} (f_{2} \;3) [(f_{2} := \lambda n.\lambda x.\lambda y. y n]  =( (\lambda n.\lambda x.\lambda y. y n) \;0 )\]
+	\[ \rightarrow_{\beta}(\lambda x.\lambda y. y n)[n := 0] = (\lambda x.\lambda y. y \;0) = 1\]
+
+	\[(f_{2} \;3) \rightarrow_{\beta} (f_{2} \;3) [(f_{2} := \lambda n.\lambda x.\lambda y. y n] = ( (\lambda n.\lambda x.\lambda y. y n) \;3)\]
+	\[ \rightarrow_{\beta}(\lambda x.\lambda y. y n)[n := 3] = (\lambda x.\lambda y. y \;3) = 4\]
+	2.b)
+	\[(g_{2} \;1) \rightarrow_{\beta} (g_{2} \;1) [(g_{2} := \lambda n.n \;0 \;(\lambda x.x)]  =( ( \lambda n.n \;0 \;(\lambda x.x)) \;1) \rightarrow_{\beta} (n \;0 \;(\lambda x.x))[n:=1] \]
+	\[ = (n[n := 1]\; 0 [n := 1]  \;  (\lambda x.x) [n := 1]) = (1\;0\;(\lambda x.x)) =( ( \lambda x.\lambda y. y \; 0)\; 0  \; (\lambda x.x))\]
+	\[ \rightarrow_{\beta}( ( \lambda y. y \; 0)[x:= 0]  \; (\lambda x.x)) = ( ( \lambda y. y \; 0)\; (\lambda x.x))  \rightarrow_{\beta} (y \; 0) [y:=\lambda x.x] \]
+	\[= (y[y:=\lambda x.x] \; 0[y:=\lambda x.x])  = ( (\lambda x.x) \;0)  \rightarrow_{\beta} (x [x := 0] ) = 0\]
+	
+	\[(g_{2} \;4) \rightarrow_{\beta} (g_{2} \;4) [g_{2} := \lambda n.n \;0 \;(\lambda x.x)]  =( ( \lambda n.n \;0 \;(\lambda x.x)) \;4) \rightarrow_{\beta} (n \;0 \;(\lambda x.x))[n:=4] \]
+	\[ = (n[n := 4]\; 0 [n := 4]  \;  (\lambda x.x) [n := 4]) = (4\;0\;(\lambda x.x)) =( ( \lambda x.\lambda y. y \; 3)\; 0  \; (\lambda x.x))\]
+	\[ \rightarrow_{\beta}( ( \lambda y. y \; 3)[x:= 0]  \; (\lambda x.x)) = ( ( \lambda y. y \; 3)\; (\lambda x.x))  \rightarrow_{\beta} (y \; 3) [y:=\lambda x.x] \]
+	\[= (y[y:=\lambda x.x] \; 3[y:=\lambda x.x])  = ( (\lambda x.x) \;3)  \rightarrow_{\beta} (x [x := 3] ) = 3\]
+	
+	2.c)
+	\[(h_{2} \;0) \rightarrow_{\beta} (h_{2} \;0) [(h_{2} := \lambda n.n  \; \underline {true} \;(\lambda x.  \underline {false})]  =( ( \lambda n.n  \; \underline {true} \;(\lambda x.  \underline 		{false})) \;0 )\]
+	\[ \rightarrow_{\beta}(n  \; \underline {true} \;(\lambda x.  \underline {false}))[n := 0] = (n[n := 0]   \; \underline {true}[n := 0]  \;(\lambda x.  \underline {false})[n := 0] )\]
+	\[ = (0  \; \underline {true} \;(\lambda x.  \underline {false})) =( (\lambda x.\lambda y. x)\; \underline {true}  \;(\lambda x.  \underline {false}))  \rightarrow_{\beta} ( (\lambda y. x)\; [x:= 		\underline {true} ] \;(\lambda x.  \underline {false})) \]
+	\[=((\lambda y.\underline {true})\; (\lambda x.  \underline {false})) = \underline {true}  \]
+
+	\[(h_{2} \;5) \rightarrow_{\beta} (h_{2} \;5) [(h_{2} := \lambda n.n  \; \underline {true} \;(\lambda x.  \underline {false})]  =( ( \lambda n.n  \; \underline {true} \;(\lambda x.  \underline 		{false})) \;5 )\]
+	\[ \rightarrow_{\beta}(n  \; \underline {true} \;(\lambda x.  \underline {false}))[n := 5] = (n[n := 5]   \; \underline {true}[n := 5]  \;(\lambda x.  \underline {false})[n := 5] )\]
+	\[ = (5  \; \underline {true} \;(\lambda x.  \underline {false})) =( (\lambda x.\lambda y. y\; 4)\; \underline {true}  \;(\lambda x.  \underline {false}))  \rightarrow_{\beta} ( (\lambda y. y \; 4)\; 		[x:= \underline {true} ] \;(\lambda x.  \underline {false})) \]
+	\[=((\lambda y. y \; 4)\; (\lambda x.  \underline {false})) \rightarrow_{\beta} ((y \; 4)[y :=   (\lambda x.  \underline {false})] = (\lambda x.  \underline {false} \; 4) = \underline {false}\]
+
+	2.d) \\ \ \\
+	$f_{2}$ es una función que suma 1 al numero pasado como argumento (el numero tiene que ser  un natural de Scott) \\ \ \\
+	$g_{2}$ es una función que resta 1 al numero pasado como argumento (el numero tiene que ser  un natural de Scott) \\ \ \\
+	$h_{2}$ es una función quenos dice si el argumento es 0 el agumento es un numero natural de Scott\\ \ \\
+
+	2.e)\\ 
+	tenemos que : \\
+	$\underline {true} =  \lambda x. \lambda y . x$\\ 
+	$\underline {false} =  \lambda x. \lambda y . y$\\ 
+	$\underline {if} =  \lambda p . \lambda a. \lambda b \; p \; a \; b$ \\
+	$h_{2}  = \lambda n.n  \; \underline {true} \;(\lambda x.  \underline {false})$\\
+	$f_{2} = \lambda n.\lambda x.\lambda y. y n$\\
+	$g_{2} = \lambda n.n \;0 \;(\lambda x.x)$\\ \ \\
+	
+	Sea F un combinador de punto fijo:\\
+	Definimos $ sumaScott \rightleftharpoons Fg $ donde \\
+	$ g \rightleftharpoons \lambda f . \lambda x . \lambda y. \underline {if} \; (h_{2}\; y )  \; x \; ( f \; ( f_{2} \; x ) \; (g_{2} \; y )) $
+	
+	\end{flushleft}
+
+
+
+\end {document}
+	
