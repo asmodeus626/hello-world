@@ -17,6 +17,137 @@
 	\maketitle
 	\begin{flushleft}
 	1.-  \\ \ \\
+	a) \\
+	\[(f1\;5\;0)\] \\
+\[((\lambda n.\lambda m.\lambda s.\lambda z.(m\;n)\;s\;z)\;5)\;0\] \\
+\[\rightarrow_{\beta}(\lambda m.\lambda s.\lambda z.(m\;5)\;s\;z)\;0\] \\
+\[\rightarrow_{\beta}(\lambda s.\lambda z.(0\;5)\;s\;z)\] \\
+\[\rightarrow_{\beta}\lambda s.\lambda z.((\lambda s.\lambda z.z)\;(\lambda s.\lambda z.s (s (s (s (s\;z))))))\;s\;z\] \\
+\[\rightarrow_{\beta}\lambda s.\lambda z.(\lambda z.z)\;s\;z\] \\
+\[\rightarrow_{\beta}\lambda s.\lambda z.s\;z\]
+	\\ \ \\
+	\[(f1\;2\;3)\] \\
+
+\[((\lambda n.\lambda m.\lambda s.\lambda z.(m\;n)\;s\;z)\;2)\;3\] \\
+
+\[\rightarrow_{\alpha}(((\lambda n.(\lambda m.(\lambda s.(\lambda z.(((m\;n)s)z)))))(\lambda a.(\lambda b.(a(a\;b)))))(\lambda c.(\lambda d.(c(c(c\;d))))))\] \\
+
+\[\rightarrow_{\beta}((\lambda m.(\lambda s.(\lambda z.(((m(\lambda a.(\lambda b.(a(a\;b)))))s)z))))(\lambda c.(\lambda d.(c(c(c\;d))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((((\lambda c.(\lambda d.(c(c(c\;d)))))(\lambda a.(\lambda b.(a(a\;b)))))s)z)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda d.((\lambda a.(\lambda b.(a(a\;b))))((\lambda a.(\lambda b.(a(a\;b))))((\lambda a.(\lambda b.(a(a\;b))))d))))s)z)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda d.((\lambda a.(\lambda b.(a(a\;b))))((\lambda c.(\lambda e.(c(c\;e))))((\lambda f.(\lambda g.(f(f\;g))))d))))s)z)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda a.(\lambda b.(a(a\;b))))((\lambda c.(\lambda e.(c(c\;e))))((\lambda f.(\lambda g.(f(f g))))s)))z)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((\lambda b.(((\lambda c.(\lambda e.(c(c\;e))))((\lambda f.(\lambda g.(f(f\;g))))s))(((\lambda c.(\lambda e.(c(c\;e))))((\lambda f.(\lambda g.(f(f\;g))))s))b)))z)))\] \\
+
+\[\rightarrow_{\alpha}(\lambda s.(\lambda z.((\lambda b.(((\lambda c.(\lambda e.(c(c\;e))))((\lambda f.(\lambda g.(f(f\;g))))s))(((\lambda a.(\lambda d.(a(a\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))b)))z)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda c.(\lambda e.(c(c\;e))))((\lambda f.(\lambda g.(f(f\;g))))s))(((\lambda a.(\lambda d.(a(a d))))((\lambda h.(\lambda i.(h(h\;i))))s))z))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((\lambda e.(((\lambda f.(\lambda g.(f(f\;g))))s)(((\lambda f.(\lambda g.(f(f\;g))))s)e)))(((\lambda a.(\lambda d.(a(a\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))z))))\] \\
+
+\[\rightarrow_{\alpha}(\lambda s.(\lambda z.((\lambda e.(((\lambda f.(\lambda g.(f(f\;g))))s)(((\lambda a.(\lambda b.(a(a\;b))))s)e)))(((\lambda c.(\lambda d.(c(c\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))z))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda f.(\lambda g.(f(f\;g))))s)(((\lambda a.(\lambda b.(a(a\;b))))s)(((\lambda c.(\lambda d.(c(c\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))z)))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((\lambda g.(s(s\;g)))(((\lambda a.(\lambda b.(a(a\;b))))s)(((\lambda c.(\lambda d.(c(c\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))z)))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(((\lambda a.(\lambda b.(a(a\;b))))s)(((\lambda c.(\lambda d.(c(c\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))z))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s((\lambda b.(s(s\;b)))(((\lambda c.(\lambda d.(c(c\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))z))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(s(s(((\lambda c.(\lambda d.(c(c\;d))))((\lambda h.(\lambda i.(h(h\;i))))s))z)))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(s(s((\lambda d.(((\lambda h.(\lambda i.(h(h\;i))))s)(((\lambda h.(\lambda i.(h(h\;i))))s)d)))z)))))))\] \\
+
+\[\rightarrow_{\alpha}(\lambda s.(\lambda z.(s(s(s(s((\lambda d.(((\lambda h.(\lambda i.(h(h\;i))))s)(((\lambda a.(\lambda b.(a(a\;b))))s)d)))z)))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(s(s(((\lambda h.(\lambda i.(h(h\;i))))s)(((\lambda a.(\lambda b.(a(a\;b))))s)z))))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(s(s((\lambda i.(s(s\;i)))(((\lambda a.(\lambda b.(a(a\;b))))s)z))))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(s(s(s(s(((\lambda a.(\lambda b.(a(a\;b))))s)z)))))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(s(s(s(s((\lambda b.(s(s\;b)))z)))))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s(s(s(s(s(s(s\;z))))))))))\]
+\\ \ \\
+
+    b) \\
+    \[(g1\;0)\] \\
+
+\[((\lambda n.\lambda s.\lambda z.((((n\;(\lambda h1.\lambda h2.(h2\;(h1\;s))))\;(\lambda u.z))\;(\lambda u.u))))\;(\lambda s.\lambda z.z))\] \\
+
+\[\rightarrow_{\alpha}((\lambda n.(\lambda s.(\lambda z.(((n(\lambda h1.(\lambda h2.(h2(h1\;s)))))(\lambda u.z))(\lambda a.a)))))(\lambda b.(\lambda c.c)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((((\lambda b.(\lambda c.c))(\lambda h1.(\lambda h2.(h2(h1\;s)))))(\lambda u.z))(\lambda a.a))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda c.c)(\lambda u.z))(\lambda a.a))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((\lambda u.z)(\lambda a.a))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.z))\]
+\\ \ \\
+
+\[(g1\;3)\] \\
+
+\[((\lambda n.\lambda s.\lambda z.((((n\;(\lambda h1.\lambda h2.(h2\;(h1\;s))))\;(\lambda u.z))\;(\lambda u.u))))\;(\lambda s.\lambda z.(s\;(s\;(s\;z)))))\] \\
+
+\[\rightarrow_{\alpha}((\lambda n.(\lambda s.(\lambda z.(((n(\lambda h1.(\lambda h2.(h2(h1\;s)))))(\lambda u.z))(\lambda a.a)))))(\lambda b.(\lambda c.(b(b(b\;c))))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((((\lambda b.(\lambda c.(b(b(b\;c)))))(\lambda h1.(\lambda h2.(h2(h1\;s)))))(\lambda u.z))(\lambda a.a))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda c.((\lambda h1.(\lambda h2.(h2(h1\;s))))((\lambda h1.(\lambda h2.(h2(h1\;s))))((\lambda h1.(\lambda h2.(h2(h1\;s))))c))))(\lambda u.z))(\lambda a.a))))\] \\
+
+\[\rightarrow_{\alpha}(\lambda s.(\lambda z.(((\lambda c.((\lambda h1.(\lambda h2.(h2(h1\;s))))((\lambda a.(\lambda b.(b(a\;s))))((\lambda d.(\lambda e.(e(d\;s))))c))))(\lambda u.z))(\lambda f.f))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda h1.(\lambda h2.(h2(h1\;s))))((\lambda a.(\lambda b.(b(a\;s))))((\lambda d.(\lambda e.(e(d\;s))))(\lambda u.z))))(\lambda f.f))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((\lambda h2.(h2(((\lambda a.(\lambda b.(b(a\;s))))((\lambda d.(\lambda e.(e(d\;s))))(\lambda u.z)))s)))(\lambda f.f))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((\lambda f.f)(((\lambda a.(\lambda b.(b(a\;s))))((\lambda d.(\lambda e.(e(d\;s))))(\lambda u.z)))s))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(((\lambda a.(\lambda b.(b(a\;s))))((\lambda d.(\lambda e.(e(d\;s))))(\lambda u.z)))s)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.((\lambda b.(b(((\lambda d.(\lambda e.(e(d\;s))))(\lambda u.z))s)))s)))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(((\lambda d.(\lambda e.(e(d\;s))))(\lambda u.z))s))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s((\lambda e.(e((\lambda u.z)s)))s))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s((\lambda u.z)s)))))\] \\
+
+\[\rightarrow_{\beta}(\lambda s.(\lambda z.(s(s\;z))))\]
+\\ \ \\
+	c) \\
+	\[(h1\;1)\] \\
+\[(\lambda n.fst\;(n\;ss\;zz))\;1\] \\
+\[\rightarrow_{\beta}fst(1\;(\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;(pair\;0\;0))\] \\
+\[\rightarrow_{\beta}fst((\lambda .s.z.(s\;z))\;(\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;(pair\;0\;0))\] \\
+\[\rightarrow_{\beta}fst((\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;(pair\;0\;0))\] \\
+\[\rightarrow_{\beta}fst(pair\;(snd\;(pair\;0\;0))\;(suc\;(snd\;(pair\;0\;0))))\] \\
+\[\rightarrow_{\beta}fst(pair\;0\;1)\] \\
+\[\rightarrow_{\beta}0\]
+	\\ \ \\
+	\[(h1\;2)\] \\
+\[\rightarrow_{\beta}(\lambda n.fst\;(n\;ss\;zz))\;2\] \\
+\[\rightarrow_{\beta}fst(2\;(\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;(pair\;0\;0))\] \\
+\[\rightarrow_{\beta}fst((\lambda .s.z.(s\;(s\;z)))\;(\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;(pair\;0\;0))\] \\
+\[\rightarrow_{\beta}fst(((\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;((\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;(pair\;0\;0))))\] \\
+\[\rightarrow_{\beta}fst(((\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;((pair\;(snd\;(pair\;0\;0))\;(suc\;(snd\;(pair\;0\;0)))))))\] \\
+\[\rightarrow_{\beta}fst((\lambda p.pair\;(snd\;p)\;(suc\;(snd\;p)))\;(pair\;0\;1))\] \\
+\[\rightarrow_{\beta}fst(pair\;(snd\;(pair\;0\;1))\;(suc\;(snd\;(pair\;0\;1))))\] \\
+\[\rightarrow_{\beta}fst(pair\;1\;(suc\;1))\] \\
+\[\rightarrow_{\beta}fst(pair\;1\;2)\] \\
+\[\rightarrow_{\beta}1\]
+\\ \ \\
+f1 es la función potencia: $n^{m}$ \\
+g1 es la función que resta 1 a un número natural.\\
+h1 es una función que resta 1 a un número natural. \\ \ \\
 
 	2. a)
 	\[(f_{2} \;0) \rightarrow_{\beta} (f_{2} \;3) [(f_{2} := \lambda n.\lambda x.\lambda y. y n]  =( (\lambda n.\lambda x.\lambda y. y n) \;0 )\]
@@ -63,10 +194,16 @@
 	Sea F un combinador de punto fijo:\\
 	Definimos $ sumaScott \rightleftharpoons Fg $ donde \\
 	$ g \rightleftharpoons \lambda f . \lambda x . \lambda y. \underline {if} \; (h_{2}\; y )  \; x \; ( f \; ( f_{2} \; x ) \; (g_{2} \; y )) $
+	\\ \ \\
+	3.-\\
+	Sea F un combinador de punto fijo y\\$iszero =_{def} \lambda m.m\;(\lambda x.false)\;true$\\ \ \\
 	
+	a)Una función que dados n y m calcule $n^{m}.$\\
+	$pot = F g$ \\
+	$g = \lambda f.\lambda n.\lambda m.if\;(iszero\;n)\;then\;1\;else\;n*(f\;n\;(m-1))$ \\ \ \\
+	b) Una función que decida si un natural de Scott es impar. \\
+	$imp = F g$ \\
+	$g = \lambda f.\lambda n.if\;(h_{2}\;0)\;then\;false\;else\;(if\;(h_{2}\;(g_{2}\;n))\;then\;true\;else\;(f\;(g_{2}\;(g_{2}\;n))))$ \\
 	\end{flushleft}
 
-
-
 \end {document}
-	
