@@ -54,6 +54,31 @@ ejemplo3 = formaNormal $ AppU (LamU "x" (LamU "y" (AppU (VarU "y") (VarU "x"))))
 ejemplo4 = formaNormal $ AppU (LamU "y" (AppU (VarU "y") (VarU "a"))) (AppU (LamU "x" (VarU "x")) (LamU "z" (AppU (LamU "u" (VarU "u")) (VarU "z"))))
 
 --Codifica los incisos de la pregunta 1
+ceroCh = LamU "s" (LamU "z" (VarU "z"))
+unoCh = LamU "s" (LamU "z" (AppU (VarU "s") (VarU "z")))
+dosCh = LamU "s" (LamU "z" (AppU (VarU "s") (AppU (VarU "s") (VarU "z"))))
+tresCh = LamU "s" (LamU "z" (AppU (VarU "s") (AppU (VarU "s") (AppU (VarU "s") (VarU "z")))))
+cincoCh = LamU "s" (LamU "z" (AppU (VarU "s") (AppU (VarU "s") (AppU (VarU "s") (AppU (VarU "s") (AppU (VarU "s") (VarU "z")))))))
+
+fst = LamU "p" (AppU (VarU "p") verdadero)
+snd = LamU "p" (AppU (VarU "p") falso)
+pair = LamU "x" (LamU "y" (LamU "p" (AppU (AppU (VarU "p") (VarU "x")) (VarU "y"))))
+suc = LamU "n" (LamU "s" (LamU "z" (AppU (Var "s") (AppU (AppU (VarU "n") (VarU "s")) (VarU "z")))))
+ss = LamU "p" (AppU (AppU suc (AppU snd (VarU "p"))) (AppU pair (AppU snd (VarU "p"))))
+zz = (AppU pair (AppU ceroCh ceroCh))
+
+f1 = LamU "n" (LamU "m" (LamU "s" (LamU "z" (AppU (AppU (AppU (VarU "m") (VarU "n")) (VarU "s")) (VarU "z")))))
+g1 = LamU "n" (LamU "s" (LamU "z" (AppU (AppU (AppU (VarU "n") (LamU "h1" (LamU "h2" (AppU (VarU "h2") (AppU (VarU "h1") (VarU "s")))))) (LamU "u" (VarU "z"))) (LamU "u" (VarU "u")))))
+h1 = LamU "n" (AppU fst (AppU (AppU (VarU "n") ss) zz))
+
+ejemplo1a1 = formaNormal $ AppU (AppU f1 cincoCh) ceroCh
+ejemplo1a2 = formaNormal $ AppU (AppU f1 dosCh) tresCh
+
+ejemplo1b1 = formaNormal $ AppU g1 ceroCh
+ejemplo1b2 = formaNormal $ AppU g1 tresCh
+
+ejemplo1c1 = formaNormal $ AppU h1 unoCh
+ejemplo1c2 = formaNormal $ AppU h1 dosCh
 
 --Codifica los incisos de la pregunta 2
 cero = LamU "z" (LamU "w" (VarU "z"))
@@ -75,6 +100,19 @@ ejemplo2c1 = formaNormal $ AppU p2_h2 cero
 ejemplo2c2 = formaNormal $ AppU p2_h2 cinco
 
 --Codifica los incisos de la pregunta 3
+curry_rosser = LamU "f" (LamU "x" (AppU (VarU "f") (AppU (VarU "x") (VarU "x")))) (LamU "x" (AppU (VarU "f") (AppU (VarU "x") (VarU "x"))))
+iszero = LamU "m" (AppU (AppU (Var "m") (LamU "x" falso)) verdadero)
+iflambda = LamU "v" (LamU "t" (LamU "f" (AppU (AppU (Var "v") (Var "t")) (Var "f"))))
+sumalambda = LamU "m" (LamU "n" (AppU (AppU (VarU "n") suc) (Var "m")))
+prodlambda = LamU "m" (LamU "n" (AppU (AppU sumalambda (Var "n")) ceroCh))
+
+--potencia
+pot = AppU curry_rosser pot'
+pot' = LamU "f" (LamU "n" (LamU "m" (AppU (AppU (AppU iflambda (AppU iszero (Var "n"))) unoCh) (AppU (AppU prodLambda (VarU "n")) (AppU (AppU (VarU "f") (VarU "n")) (AppU g1 (VarU "m")))))))
+
+--impar
+imp = AppU curry_rosser imp'
+imp' = LamU "f" (LamU "n" (AppU (AppU (AppU iflambda (AppU p2_h2 cero)) falso) (AppU (AppU (AppU iflambda (AppU p2_h2 (AppU p2_g2 (VarU "n")))) verdadero) (AppU (AppU p2_g2 (p2_g2 n = AppU p2_g2 (VarU "n")))))))
 
 {-----------------------}
 --INFERENCIA DE TIPOS--
