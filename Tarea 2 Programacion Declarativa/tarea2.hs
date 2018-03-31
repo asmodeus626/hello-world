@@ -187,6 +187,5 @@ ejer1_3 = dpll $ concat $ map clausulas $ map fnc [Disy (imp (Var "s") (Var "p")
 ejer1_4 = dpll $ concat $ map clausulas $ map fnc [Conj (Var "p") (Var "q") , Conj (Var "r") (neg (Var "s")) , imp (imp (Var "q") (Var "p")) (Var "t") , imp (imp (Var "t") (Var "r")) (Disy (Var "s") (Var "w"))] ++ [neg (Var "w")]
 
 
-ejer2_a = error "Te toca"
-ejer2_b = error "Te toca"
-
+ejer2_a = dpll $ concat $ map clausulas $ map fnc [Disy (Disy (neg (Var "l")) (Var "p")) (Var "i") , Disy (neg (Var "r")) (Var "l") , Disy (neg (Var "p")) (Var "g") , neg (Var "q") , Var "r" , neg (Var "p")]
+ejer2_b = dpll $ concat $ map clausulas $ map fnc [Disy (Disy (Var "c") (Var "k")) (Var "m") , Disy (Disy (neg (Var "m")) (Var "k")) (Var "c") , Disy (Conj (Var "m") (Var "k")) (Conj (neg (Var "m")) (neg (Var "k"))) , Disy (neg (Var "c")) (Var "m")]	
