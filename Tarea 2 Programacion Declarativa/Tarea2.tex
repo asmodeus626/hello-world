@@ -1,0 +1,156 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb, amsmath, amsbsy} % simbolitos
+\usepackage{upgreek} % para poner letras griegas sin cursiva
+\usepackage{cancel} % para tachar
+\usepackage{mathdots} % para el comando \iddots
+\usepackage{mathrsfs} % para formato de letra
+\usepackage{stackrel} % para el comando \stackbin
+\usepackage{dsfont} % para conjuntos de números.
+\usepackage{synttree}
+\title{Tarea 2 \\Programacíon Declarativa}
+\author{Palacios Gómez Esnesto Rubén\\Peto Gutiérrez Emmanuel}
+\begin {document}
+	\maketitle
+	\raggedright
+	Ejercicio 1:\\ a) Tableaux
+$\bullet \; \{a \lor b, \neg c \rightarrow \neg a \} \vdash b \rightarrow \neg c$\\
+$b \rightarrow \neg c \equiv \neg b \lor \neg c$ \\
+$\neg (\neg b \lor \neg c) \equiv b \land c$ \\ \ \\
+
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNN: $\{a \lor b, c \lor \neg a, b \land c\}$ \\ \ \\
+
+\synttree [$\{a \lor b, c \lor \neg a, b \land c\}$[$a \lor b$[$c \lor \neg a$[$b \land c$[$b$[$c$[$a$[$c$[$\circ$]][$\neg a$[$\otimes$]]][$b$[$c$[$\circ$]][$\neg a$[$\circ$]]]]]]]]] \\ \ \\
+El tableaux es abierto, entonces el conjunto $\Gamma \cup \{\neg \varphi \}$ es satisfacible. Por lo tanto el argumento no es válido.\\ \ \\
+
+$\bullet \; \{(p \rightarrow r) \lor (\neg s \land p),s \rightarrow \neg (p \land r)\} \vdash \neg (r \lor \neg s)$ \\
+$s \rightarrow \neg (p \land r) \equiv \neg s \lor \neg (p \land r) \equiv \neg s \lor \neg p \lor \neg r$\\
+$(p \rightarrow r) \lor (\neg s \land p) \equiv \neg p \lor r \lor (\neg s \land p)$ \\ \ \\
+
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNN: $\{r \lor \neg s, \neg s \lor \neg p \lor \neg r, \neg p \lor r \lor (\neg s \land p)\}$ \\ \ \\
+
+\synttree [$\{r \lor \neg s, \neg s \lor \neg p \lor \neg r, \neg p \lor r \lor (\neg s \land p)\}$[$r \lor \neg s$[$\neg s \lor \neg p \lor \neg r$[$\neg p \lor r \lor (\neg s \land p)$
+[$r$
+	[$\neg s$
+		[$\neg p$[$\circ$]]
+		[$r$[$\circ$]]
+		[$\neg s \land p$[$\neg s$[$p$[$\circ$]]]]]
+	[$\neg p$
+		[$\neg p$[$\circ$]]
+		[$r$[$\circ$]]
+		[$\neg s \land p$[$\neg s$[$p$[$\otimes$]]]]]
+	[$\neg r$[$\otimes$]]
+	]
+[$\neg s$
+	[$\neg s$
+		[$\neg p$[$\circ$]]
+		[$r$[$\circ$]]
+		[$\neg s \land p$[$\neg s$[$p$[$\circ$]]]]]
+	[$\neg p$
+		[$\neg p$[$\circ$]]
+		[$r$[$\circ$]]
+		[$\neg s \land p$[$\neg s$[$p$[$\otimes$]]]]]
+	[$\neg r$
+		[$\neg p$[$\circ$]]
+		[$r$[$\otimes$]]
+		[$\neg s \land p$[$\neg s$[$p$[$\circ$]]]]]]
+]]]] \\ \ \\
+El tableaux es abierto, entonces el conjunto $\Gamma \cup \{\neg \varphi \}$ es satisfacible. Por lo tanto el argumento no es válido.\\ \ \\
+
+$\bullet \; \{(s \rightarrow p) \lor (t \rightarrow q)\} \vdash (s \rightarrow q) \lor (t \rightarrow p)$\\
+$\neg ((s \rightarrow q) \lor (t \rightarrow p)) \equiv \neg (s \rightarrow q) \land \neg (t \rightarrow p) \equiv s \land \neg q \land t \land \neg p$ \\
+$(s \rightarrow p) \lor (t \rightarrow q) \equiv \neg s \lor p \lor \neg t \lor q$ \\ \ \\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNN: $\{\neg s \lor p \lor \neg t \lor q, s \land \neg q \land t \land \neg p\}$ \\ \ \\
+
+\synttree [$\{\neg s \lor p \lor \neg t \lor q, s \land \neg q \land t \land \neg p\}$[$s$[$\neg q$[$t$[$\neg p$
+	[$\neg s$[$\otimes$]]
+	[$p$[$\otimes$]]
+	[$\neg t$[$\otimes$]]
+	[$q$[$\otimes$]]]]]]] \\ \ \\
+El tableaux es cerrado, entonces el conjunto $\Gamma \cup \{\neg \varphi \}$ es insatisfacible. Por lo tanto el argumento es válido.\\ \ \\
+
+$\bullet \; \{p \land q, r \land \neg s, q \rightarrow (p \rightarrow t), t \rightarrow (r \rightarrow (s \lor w))\} \vdash w$\\
+$q \rightarrow (p \rightarrow t) \equiv \neg q \lor \neg p \lor t$\\
+$t \rightarrow (r \rightarrow (s \lor w)) \equiv \neg t \lor \neg r \lor s \lor w$\\ \ \\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNN: $\{p \land q, r \land \neg s, \neg q \lor \neg p \lor t,  \neg t \lor \neg r \lor s \lor w, \neg w\}$\\ \ \\
+\synttree [$\{p \land q, r \land \neg s, \neg q \lor \neg p \lor t,  \neg t \lor \neg r \lor s \lor w, \neg w\}$[$p \land q$[$r \land \neg s$[$\neg q \lor \neg p \lor \neg t$[$\neg t \lor \neg r \lor s \lor w$[$\neg w$[$p$[$q$[$r$[$\neg s$
+	[$t$
+		[$\neg t$[$\otimes$]]
+		[$\neg r$[$\otimes$]]
+		[$s$[$\otimes$]]
+		[$w$[$\otimes$]]]
+	[$\neg p$[$\otimes$]]
+	[$\neg q$[$\otimes$]]]]]]]]]]]]\\ \ \\
+	
+El tableaux es cerrado, entonces el conjunto $\Gamma \cup \{\neg \varphi \}$ es insatisfacible. Por lo tanto el argumento es válido.\\ \ \\
+
+b) Algoritmo DPLL \\
+$\bullet \; \{a \lor b, \neg c \rightarrow \neg a \} \vdash b \rightarrow \neg c$\\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNC: $\{a \lor b, c \lor \neg a, b, c\}$\\ \ \\
+$\star \; \{a \lor b, c \lor \neg a, b, c\}$\\
+$\star \; c,\{a \lor b, b\}$ \\
+$\star \; b,\emptyset $ \\
+Como obtenemos un conjunto vacío, entonces el conjunto es satisfacible y el argumento no es válido.\\ \ \\
+$\bullet \; \{(p \rightarrow r) \lor (\neg s \land p),s \rightarrow \neg (p \land r)\} \vdash \neg (r \lor \neg s)$ \\
+$(p \rightarrow r) \lor (\neg s \land p) \equiv \neg p \lor r \lor \neg s$ \\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNC: $\{\neg p \lor r \lor \neg s, \neg s \lor \neg p \lor \neg r, r \lor \neg s\}$\\
+Se elige a la literal $\neg p$\\
+1)$S \cup \{\neg p\} = \{\neg p \lor r \lor \neg s, \neg s \lor \neg p \lor \neg r, r \lor \neg s, \neg p\}$\\
+2)$S \cup \{p\} = \{\neg p \lor r \lor \neg s, \neg s \lor \neg p \lor \neg r, r \lor \neg s, p\}$\\
+1)\\
+$\star \; \neg p, \{ r \lor \neg s \}$ \\
+Se elige a r como literal.\\
+1.1)$\{r \lor \neg s,r\}$ \\
+1.2)$\{r \lor \neg s,\neg r\}$\\
+1.1)\\
+$\star \; r, \emptyset$\\
+Como obtenemos un conjunto vacío, entonces el conjunto es satisfacible y el argumento no es válido.\\ \ \\
+$\bullet \; \{(s \rightarrow p) \lor (t \rightarrow q)\} \vdash (s \rightarrow q) \lor (t \rightarrow p)$\\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNC: $\{\neg s \lor p \lor \neg t \lor q, s, \neg q, t, \neg  p\}$\\
+$\star \; \neg p, \{\neg s \lor \neg t \lor q, s, \neg q, t\}$\\
+$\star \; t, \{\neg s \lor q, s, \neg q\}$\\
+$\star \; \neg q, \{\neg s, s\}$\\
+$\star \; s, \{ \square \}$\\ \ \\
+Como se obtiene una cláusula vacía el conjunto es insatisfacible, por lo tanto el argumento es válido.\\ \ \\
+$\bullet \; \{p \land q, r \land \neg s, q \rightarrow (p \rightarrow t), t \rightarrow (r \rightarrow (s \lor w))\} \vdash w$\\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNC: $\{p,q,r,\neg s,\neg q \lor \neg p \lor t, \neg t \lor \neg r \lor s \lor w, \neg w\}$\\
+$\star \; \neg w, \{p,q,r,\neg s,\neg q \lor \neg p \lor t, \neg t \lor \neg r \lor s\}$\\
+$\star \; p, \{q,r,\neg s,\neg q \lor t, \neg t \lor \neg r \lor s\}$\\
+$\star \; q, \{r, \neg s, t, \neg t \lor \neg r \lor s\}$\\
+$\star \; r, \{\neg s,t,\neg t \lor s\}$\\
+$\star \; \neg s, \{t,\neg t\}$\\
+$\star \; t, \{\square\}$\\ \ \\
+Como se obtiene una cláusula vacía el conjunto es insatisfacible, por lo tanto el argumento es válido.\\ \ \\
+Ejercicio 2:\\
+p: es primavera\\
+i: es invierno\\
+l: llueve\\
+r: hay ríos\\
+g: la gente utiliza gorros azules\\ \ \\
+$\{l \rightarrow p \lor i,r \rightarrow l, p \rightarrow g, \neg g \lor r\} \vdash p$\\
+$l \rightarrow p \lor i \equiv \neg l \lor p \lor i$\\
+$r \rightarrow l \equiv \neg r \lor l$\\
+$p \rightarrow g \equiv \neg p \lor g$\\ \ \\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNC: $\{\neg l \lor p \lor i, \neg r \lor l, \neg p \lor g, \neg g, r, \neg p\}$ \\ \ \\
+$\star \; \neg p, \{\neg l \lor i, \neg r \lor l,\neg g,r\}$\\
+$\star \; r, \{\neg l \lor i, l, \neg g\}$\\
+$\star \; \neg g, \{\neg l \lor i,l\}$\\
+$\star \; l, \{i\}$\\
+$\star \; i, \emptyset$\\
+Como obtenemos un conjunto vacío, entonces el conjunto es satisfacible y el argumento no es válido.\\ \ \\
+c: me gusta Children garden\\
+k: me gusta Kalimba\\
+m: me gusta Maluma\\ \ \\
+$\bullet \; \{c \lor k \lor m, m \land \neg k \rightarrow c, (m \land k) \lor (\neg m \land \neg k), c \rightarrow m\}$\\ \ \\
+Conjunto $\Gamma \cup \{\neg \varphi \}$ en FNC: $\{c \lor k \lor m, \neg m \lor k \lor c, k \lor \neg m, m \lor \neg k, \neg c \lor m\}$\\ \ \\
+1) $S \cup \{ m \} = \{c \lor k \lor m, \neg m \lor k \lor c, k \lor \neg m, m \lor \neg k, \neg c \lor m, m\}$\\
+2) $S \cup \{ \neg m \} = \{c \lor k \lor m, \neg m \lor k \lor c, k \lor \neg m, m \lor \neg k, \neg c \lor m, \neg m\}$ \\
+1) $\star \; m, \{k \lor c, k\}$\\
+1) $\star \; k, \emptyset$\\ \ \\
+Como se obtiene conjunto vacío, entonces el conjunto de fórmulas es satisfacible.\\
+Modelo: $I(k)=1, I(m)=1, I(c)=1$.
+\end {document}
