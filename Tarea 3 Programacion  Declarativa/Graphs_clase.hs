@@ -1,7 +1,8 @@
 
+module Graphs_clase where
 
 type V = Int
-data Graph = Graph [(V,[V])]
+data Graph = Graph [(V,[V])] deriving Show
 
 
 g1 = Graph [(1,[2,3]),
@@ -18,9 +19,19 @@ g2 = Graph [(1,[2,3,4]),
             (4,[]),
             (5,[4]),
             (6,[2,5])]
-            
-            
-            
+
+gcompleta = Graph [(1,[2,3,4,5]),
+                    (2,[1,3,4,5]),
+                    (3,[1,2,4,5]),
+                    (4,[1,2,3,5]),
+                    (5,[1,2,3,4])]
+
+gciclo = Graph [(1,[2,5]),
+                    (2,[3,1]),
+                    (3,[4,2]),
+                    (4,[5,3]),
+                    (5,[1,4])]
+
 vert::Graph->[V]
 vert (Graph l) = map fst l
 
@@ -29,7 +40,7 @@ edges::Graph->[(V,V)]
 edges (Graph l) = quitaRep $ concat $ map edge l where
                       edge (v,vs) = [(v,v') | v'<-vs]
                       quitaRep [] = []
-                      quitaRep ((x,y):es) = (x,y):(filter (/=(y,x)) $ quitaRep es)       
+                      quitaRep ((x,y):es) = (x,y):(filter (/=(y,x)) $ quitaRep es)
                   
                 
 neighbors::V->Graph->[V]
@@ -50,9 +61,6 @@ bfs v g = recorre [v] [] where
                              
 esConexa::Graph->Bool
 esConexa g@(Graph l) = (length $ vert g) == (length $ dfs (fst $ head l) g)
-                             
-                             
-
 
 
 
