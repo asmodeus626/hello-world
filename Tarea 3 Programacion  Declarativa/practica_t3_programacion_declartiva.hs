@@ -1,207 +1,9 @@
-type V = Int
-data Graph = Graph [(V,[V])]
+import Arreglos
+import Graphs_clase
+import Data.List
 
 
-g1 = Graph [(1,[2,3]),
-            (2,[1,4]),
-            (3,[1,4]),
-            (4,[2,3,5]),
-            (5,[4]),
-            (6,[7]),
-            (7,[6])]
-            
-g2 = Graph [(1,[2,3,4]),
-            (2,[]),
-            (3,[6]),
-            (4,[]),
-            (5,[4]),
-            (6,[2,5])]
-            
-            
-            
-vert::Graph->[V]
-vert (Graph l) = map fst l
-
-
-edges::Graph->[(V,V)]
-edges (Graph l) = quitaRep $ concat $ map edge l where
-                      edge (v,vs) = [(v,v') | v'<-vs]
-                      quitaRep [] = []
-                      quitaRep ((x,y):es) = (x,y):(filter (/=(y,x)) $ quitaRep es)       
-                  
-                
-neighbors::V->Graph->[V]
-neighbors v (Graph l) = head [snd e | e<-l, fst e==v]
-                  
-   
-dfs::V->Graph->[V]
-dfs v g = recorre [v] [] where
-          recorre [] vis = vis
-          recorre (v:vs) vis | elem v vis = recorre vs vis
-                             | otherwise = recorre (neighbors v g ++ vs) (vis++[v])    
-
-bfs::V->Graph->[V]
-bfs v g = recorre [v] [] where
-          recorre [] vis = vis
-          recorre (v:vs) vis | elem v vis = recorre vs vis
-                             | otherwise = recorre (vs ++ neighbors v g) (vis++[v])
-                             
-esConexa::Graph->Bool
-esConexa g@(Graph l) = (length $ vert g) == (length $ dfs (fst $ head l) g)
-
-
-
-
---Un arreglo es una función de los enteros en un tipo 'a'; la segunda componente es para conocer su longitud.
-data Arreglo a = Arr (Int->a) Int
-
-
---Para pintar los arreglos de forma bonita
-instance (Show a) => Show (Arreglo a) where
-      show (Arr f n) =  "{"++ pinta 0 n f where 
-                              pinta i n f | n==0 = "}" 
-                                          | i==0 = show (f i)++pinta (i+1) n f 
-                                          | i==n = "}"
-                                          | otherwise = ","++show (f i)++pinta (i+1) n f
-
---Ejemplo de un arreglo
-arr = Arr f 11 where 
-          f n = case n of
-                 0 -> 2
-                 1 -> 1
-                 2 -> 23
-                 3 -> 3
-                 4 -> 0
-                 5 -> 4
-                 6 -> 10
-                 7 -> 11
-                 8 -> 22
-                 9 -> 9
-                 10 -> 50
-                 _ -> error "fuera de índice"
-				 
---Ejemplo de un arreglo
-arr_alg1 = Arr f 10 where 
-          f n = case n of
-                 0 -> 100
-                 1 -> 70
-                 2 -> 80
-                 3 -> 60
-                 4 -> 90
-                 5 -> 20
-                 6 -> 10
-                 7 -> 17
-                 8 -> 2
-                 9 -> 85
-                 _ -> error "fuera de índice"
-				 
---Ejemplo de un arreglo
-arr1 = Arr f 4 where 
-          f n = case n of
-                 0 -> 21
-                 1 -> 22
-                 2 -> 24
-                 3 -> 27
-                 _ -> error "fuera de índice"
-				 
-arr_colores = Arr f 21 where 
-                     f n = case n of 
-                         0 -> "azul"
-                         1 -> "azul"
-                         2 -> "verde"
-                         3 -> "verde"
-                         4 -> "verde"
-                         5 -> "verde"
-                         6 -> "rojo"
-                         7 -> "rojo"
-                         8 -> "azul"
-                         9 -> "rojo"
-                         10 -> "rojo"
-                         11 -> "verde"
-                         12 -> "verde"
-                         13 -> "rojo"
-                         14 -> "rojo"
-                         15 -> "azul"
-                         16 -> "rojo"
-                         17 -> "azul"
-                         18 -> "azul"
-                         19 -> "verde"
-                         20 -> "azul"
-                         _ -> error "fuera de indice"
-						 
-                 
---Para obtener el elemento en la i-ésima posición de un arreglo
-get::Arreglo a->Int->a
-get (Arr f n) i | i>=0 && i < n = f i
-                | otherwise = error ("no :v "  ++ (show i))
-
---Para sobreescribir el elemento en la i-ésima posición
-upd::Arreglo a->Int->a->Arreglo a
-upd (Arr f n) i x = Arr (\m -> if m==i then x else f m) n
-
-
---Para obtener el tamaño de un arreglo
-size::Arreglo a->Int
-size (Arr _ n) = n
-
---Para saber si un elemento pertenece a un arreglo
-elemArr::Eq a=>a->Arreglo a->Int
-elemArr x arr = busca x 0 arr where
-                busca x i arr | i < size arr = if x == get arr i then i else busca x (i+1) arr      
-                              | otherwise = -1
-
-
---Para obtener la posición del mínimo en un arreglo que está en la posición 'i' en adelante.
-minArr::Ord a=>Arreglo a->Int->Int
-minArr arr i = buscaMin i (i+1) arr where
-               buscaMin m_i j arr | j==size arr = m_i
-                                  | otherwise = if get arr m_i < get arr j then buscaMin m_i (j+1) arr else buscaMin j (j+1) arr   
-
-maxArr::Ord a=>Arreglo a->Int->Int
-maxArr arr i = buscaMax i (i+1) arr where
-               buscaMax m_i j arr | j==size arr = m_i
-                                  | otherwise = if get arr m_i > get arr j then buscaMax m_i (j+1) arr else buscaMax j (j+1) arr  								  
-
---Intercambia los elementos en la posición 'i' y 'j' de un arreglo.
-swap::Arreglo a->Int->Int->Arreglo a
-swap arr i j = let xi = get arr i
-                   xj = get arr j
-                   f' n | n == i = xj
-                        | n == j = xi
-                        | otherwise = get arr n in
-               Arr f' (size arr)              
-                                
-swap' :: Arreglo a -> Int -> Int -> Arreglo a
-swap' (Arr f n) i j = (Arr (\m -> if(m==i) then f j else (if m == j then f i else f m )) n) 
-                                
---Ordena un arreglo con selectionSort
-selectionSort::Ord a=>Arreglo a->Arreglo a
-selectionSort arr = ordena 0 arr where
-                    ordena i arr | i<size arr = let m = minArr arr i 
-                                                    arr' = swap arr i m in 
-                                                ordena (i+1) arr'              
-                                 | otherwise = arr    
-
-
-
-bubbleSort::Ord a=>Arreglo a->Arreglo a
-bubbleSort arr = ordena arr 0 where
-                 ordena arr i | i == size arr-1 = arr 
-                              | otherwise = ordena (bubble arr i 0) (i+1) 
-                 bubble arr i j | j == (size arr)-i-1 = arr 
-                                | otherwise = if get arr j > get arr (j+1)  
-                                              then bubble (swap arr j (j+1)) i (j+1) 
-                                              else bubble arr i (j+1)                        
-
-
-insertionSort::Ord a=>[a]->[a]
-insertionSort xs = case xs of
-                    [] -> []
-                    x:xs -> inserta x $ insertionSort xs where
-                            inserta x [] = [x]
-                            inserta x (y:ys) = if x<y then (x:(y:ys)) 
-                                                      else (y:(inserta x ys))  
-
+-- funcion que hace el HeapSort
 heapSort :: Ord c => Arreglo c -> Arreglo c
 heapSort (Arr f n) = construyeArreglo 0 (Arr f n) a1
                     where  a1 = construyeHeap  0 (Arr f 0) (Arr f n)
@@ -222,15 +24,9 @@ heapSort (Arr f n) = construyeArreglo 0 (Arr f n) a1
                                                                                             elem_der = get (Arr f n) hijo_der
                                                                                             elem_izq = get (Arr f n) hijo_izq
                                                                                             elem = get (Arr f n) i
-			
-alg_pregunta1 :: (Integral a) => Arreglo a -> Arreglo a
-alg_pregunta1 a = regresa 0  (Arr (\m -> 0) (size a)) (bucketSort (creaArreglo 0 a (Arr (\m -> 0.0) (size a))))
-                  where creaArreglo i a b | (i == size a) = b
-				                          | otherwise = creaArreglo (i+1) a (upd b i ((fromIntegral (get a i) :: Float) / (fromIntegral (size a) :: Float)))
-                        regresa i a b | (i < size a) = regresa (i+1) (upd a i (truncate ((get b i)  * (fromIntegral (size a) :: Float)))) b
-						              | otherwise = a
 
 
+-- Funcion que hace  BuscketSrot 
 bucketSort :: Arreglo Float -> Arreglo Float 
 bucketSort a = bucketSort_aux  0 a (creaBuckets 0 (Arr (\m -> (Arr (\m' -> 2.0) 0)) (size a)))
                where bucketSort_aux i a buckets | (i == size a) = vaciaBuckets 0 0 0 (Arr (\m -> 0.0) (size a)) (ordenaBuckets 0 buckets)
@@ -245,38 +41,28 @@ bucketSort a = bucketSort_aux  0 a (creaBuckets 0 (Arr (\m -> (Arr (\m' -> 2.0) 
                                                                                        mete_aux (Arr f n) elem  = upd (Arr f (n+1)) n elem																			
                      creaBuckets i a | (i == size a) = a
                                      | otherwise = creaBuckets (i+1) (upd a i (Arr (\m -> 0.0) 0))	
-									 								 
-	
 
-	
- 
-mergeSort::Ord a=>[a]->[a]
-mergeSort xs = case xs of
-                [] -> []
-                [x] -> [x]
-                xs -> merge (mergeSort x1) (mergeSort x2) where
-                      x1 = take k xs
-                      x2 = drop k xs	
-                      k = div (length xs) 2
-                      merge [] ys = ys
-                      merge xs [] = xs
-                      merge l1@(x:xs) l2@(y:ys) = if x<y then x:(merge xs l2)
-                                                  else y:(merge l1 ys) 
-												  
-												  
 busquedaBinaria :: (Ord a) => Arreglo a->a->Int 
 busquedaBinaria a x = busquedaBinaria_aux a x 0 ((size a)-1)
                       where busquedaBinaria_aux a t ini fin | (ini > fin) = (-1)
-					                                        | (get a mitad) == t = mitad
-				                                             | otherwise = if ((get a mitad) < x) then busquedaBinaria_aux a x (mitad+1) fin else busquedaBinaria_aux a x ini (mitad-1)
-								                            where mitad = (ini + fin) `div` 2
+                                                            | (get a mitad) == t = mitad
+                                                            | otherwise = if ((get a mitad) < t) then busquedaBinaria_aux a t (mitad+1) fin else busquedaBinaria_aux a t ini (mitad-1)
+                                                            where mitad = (ini + fin) `div` 2
+									 								 
+	
+--Algoritmo de la pregunta 1            
+alg_pregunta1 :: (Integral a) => Arreglo a -> Arreglo a
+alg_pregunta1 a = regresa 0  (Arr (\m -> 0) (size a)) (bucketSort (creaArreglo 0 a (Arr (\m -> 0.0) (size a))))
+                  where creaArreglo i a b | (i == size a) = b
+                                              | otherwise = creaArreglo (i+1) a (upd b i ((fromIntegral (get a i) :: Float) / (fromIntegral (size a) :: Float)))
+                        regresa i a b | (i < size a) = regresa (i+1) (upd a i (truncate ((get b i)  * (fromIntegral (size a) :: Float)))) b
+                                            | otherwise = a
+												  
+												  
+
 															
-															
-reversa :: 	Arreglo a -> Arreglo a 
-reversa a = reversa_aux 0 a 
-            where reversa_aux i (Arr f n) | (i < (n `div` 2)) = reversa_aux (i+1) (swap (Arr f n) i (n-1-i))
-                                          | otherwise = (Arr f n)
-											
+														
+-- Algoritmo de la pregunta 2											
 alg_pregunta2 :: (Ord a)=>(Num a)=>Arreglo a -> Arreglo a -> a -> Maybe (a , a)
 alg_pregunta2 a b x = busca 0 a b' x 
 					   where b' = heapSort b
@@ -284,18 +70,30 @@ alg_pregunta2 a b x = busca 0 a b' x
 					                       | otherwise = Nothing 
 										   where indice_elem = busquedaBinaria b (x-(get a i))
 
+-- Algoritmo de la pregunta 3
 alg_pregunta3 :: (Integral a) => Arreglo a-> Int -> Maybe (Int,Int)
 alg_pregunta3 a x= encuentra_maximo 0 (-1,-1) a' a' (fromIntegral x)
-                   where a' = (heapSort a)
+                   where a' = transforma (heapSort a)
                          encuentra_maximo i tupla@(ia_max , ib_max) a b x | (i < size a) = encuentra_maximo (i+1) (compara_maximo tupla (i , j) a b) a b x
-                                                                          | otherwise = if ((ia_max == -1) && (ib_max == -1)) then Nothing else Just (ia_max , ib_max)	
+                                                                          | otherwise = if ((ia_max == -1) && (ib_max == -1)) then Nothing else Just (get a ia_max , get b ib_max)	
                                                                           where j = busca_maximo b (x-(get a i))
                                                                                 compara_maximo t1@(i,j) t2@(h,k) a b | (j == -1) && (k == -1) = t1
                                                                                                                      | (j == -1) || (k == -1) = if (j == -1) then t2 else t1 
                                                                                                                      | otherwise = if (x > y) then t1 else t2 
                                                                                                                      where x = (get a i) + (get b j)
                                                                                                                            y = (get a h) + (get b k)
-                                                                                busca_maximo a n = -1					   
+                                                                                busca_maximo a x = busqueda a x 0 ((size a)-1) (-1)
+                                                                                                   where busqueda a t ini fin maximo | (ini > fin) = maximo 
+                                                                                                                                     | (get a mitad) == t = mitad
+                                                                                                                                     | otherwise = if ((get a mitad) < t) then busqueda a t (mitad+1) fin max' else busqueda a t ini (mitad-1) maximo
+                                                                                                                                     where mitad = (ini + fin) `div` 2
+                                                                                                                                           max' = if (maximo == -1) then mitad else if ((t-(get a mitad)) == (min (t-(get a mitad)) (t-(get a maximo)))) then mitad else maximo
+
+transforma :: (Integral a) => Arreglo a -> Arreglo Int
+transforma a = transforma_aux 0 a (Arr (\m -> 0) (size a))
+                where transforma_aux i a b | i < size a = transforma_aux (i+1) a (upd b i (fromIntegral (get a i)))
+                                           |  otherwise = b 
+
 
 alg_pregunta4 ::  Arreglo [Char] -> Arreglo [Char]
 alg_pregunta4 a = mueveVerdes 0 0 a
@@ -319,11 +117,13 @@ alg_pregunta5 (a , b) (c, d) = let a' = a*c
 pascal :: Int -> IO()
 pascal x =  mapM_ putStrLn $ ((flip centro (((x*70)`div`10)) . unwords) . map show) <$> pascal_calcula x
 
+-- Funcion que nos regresa el centro
 centro :: String -> Int -> String
 centro s n = espacios ++ s ++ espacios
              where espacios = replicate ((n - length s) `div` 2) ' '
 
 
+-- Funcion que cacula el triangulo de pascal en forma de listas de listas de enteros
 pascal_calcula :: Int -> [[Int]]
 pascal_calcula 1 = [[1]]
 pascal_calcula n = pascal_calcula (n-1) ++ [pascal_calcula_aux n]
@@ -333,8 +133,10 @@ pascal_calcula n = pascal_calcula (n-1) ++ [pascal_calcula_aux n]
                          pares _ = []
 					   
 
+-- Funcion que nos regresa los digitos  de un numero por ejemplo digitos 123 = [1,2,3]
 digitos :: Int -> [Int]
 digitos n = map (\x -> read [x] :: Int) (show n)
+
 
 
 acarreos :: Int -> Int -> Int
@@ -401,4 +203,149 @@ elimina_permutaciones :: (Eq a) => [[a]] -> [[a]]
 elimina_permutaciones [] = []
 elimina_permutaciones (x:xs) =  [x] ++ elimina_permutaciones [z | z <- xs , not (elem z (permutations x))]
 
+--Funciones auxiliares-------------------------------------------------------------------------------------------------------
 
+--Función que recibe una gráfica y devuelve la misma pero sin la palabra Graph
+sacaGraf::Graph->[(V,[V])]
+sacaGraf (Graph l) = l
+
+--Función que recibe un vértice y lo elimina de la gráfica. Pero no lo elimina de las vecindades
+eliminaVertice::Graph->V->Graph
+eliminaVertice (Graph ((a,b):ls)) vertice = if vertice == a then Graph ls
+                                            else Graph ((a,b):(sacaGraf (eliminaVertice (Graph ls) vertice)))
+
+--Recibe un vértice y lo elimina de todas las vecindades.
+eliminaVecino::Graph->V->Graph
+eliminaVecino graf vertice = Graph (map (elimVec vertice) (sacaGraf graf)) where
+                             elimVec v (a,b) = (a, delete v b)
+
+--Borra un vértice de la gráfica y de las vecindades.
+borraVertice::Graph->V->Graph
+borraVertice graf v = eliminaVecino (eliminaVertice graf v) v
+
+--Borra una lista de vértices de una gráfica.
+borraVertices::Graph->[V]->Graph
+borraVertices graf [] = graf
+borraVertices graf (x:xs) = borraVertices (borraVertice graf x) xs
+
+--Función que borra una arista de la gráfica
+borraArista::Graph->(V,V)->Graph
+borraArista (Graph []) _ = Graph []
+borraArista (Graph ((a,b):xs)) (v1,v2) = if a == v1
+                                         then Graph ((a,delete v2 b):xs)
+                                         else Graph ((a,b):(sacaGraf (borraArista (Graph xs) (v1,v2))))
+
+--Función que divide la gráfica en componentes conexas. Recibe una gráfica, una lista de todos los vértices y devuelve la partición.
+compConex::Graph->[V]->[[V]]
+compConex graf [] = []
+compConex graf l = let listaRes = (dfs (head l) graf)
+                   in [listaRes]++(compConex graf (l \\ listaRes))
+
+
+--Recibe una gráfica, un vérice y decide si es un vértice de corte
+esvertDeCorte::Graph->V->Bool
+esvertDeCorte graf v = let grafRed = borraVertice graf v
+                       in (length (compConex grafRed (vert grafRed))) > (length (compConex graf (vert graf)))
+
+
+--Recibe una gráfica, una arista y decide si es una arista de corte
+esarDeCorte::Graph->(V,V)->Bool
+esarDeCorte graf ar = let grafRed = borraArista graf ar
+                      in (length (compConex grafRed (vert grafRed))) > (length (compConex graf (vert graf)))
+
+
+--Recibe una gráfica, un conjunto de vértices y decide si el conjunto es independiente.
+esIndependiente::Graph->[V]->Bool
+esIndependiente (Graph l) conj = let residuo = filter (\x-> elem (fst x) conj) l
+                                 in all (\x->(intersect (snd x) conj)==[]) residuo
+
+--Verifica si una gráfica G es completa
+esCompleta::Graph->Bool
+esCompleta (Graph l) = let vertices = vert (Graph l)
+                       in all (\x->(sort (snd x))==(sort (delete (fst x) vertices))) l
+
+--Función que recibe una gráfica, un conjunto de vértices y decide si dicho conjunto es un clan.
+esClan::Graph->[V]->Bool
+esClan g conj = esCompleta (borraVertices g ((vert g) \\ conj))
+
+--Función que recibe una lista de aristas y verifica si un vértice v está en la lista.
+estaEnLista::V->[(V,V)]->Bool
+estaEnLista _ [] = False
+estaEnLista v (x:xs) = if v==(fst x) || v==(snd x) then True else estaEnLista v xs
+
+--Función que recibe una lista de aristas, un vértice y saca todas las aristas incidentes en el vértice.
+incidentes::V->[(V,V)]->[(V,V)]
+incidentes _ [] = []
+incidentes v (x:xs) = if v==(fst x) || v==(snd x) then x:(incidentes v xs) else incidentes v xs
+
+--Función que recibe un vértice, una lista de aristas y devuelve la primera arista que contenga a ese vértice.
+primerArista::V->[(V,V)]->(V,V)
+primerArista v l = if estaEnLista v l then primAr v l else (0,0) where
+                   primAr ve (x:xs) = if ve==(fst x) || ve==(snd x) then x else primAr ve xs
+
+--Función que recibe un vértice v, una arista y devuelve el vértice adyacente.
+compl::V->(V,V)->V
+compl v (a,b) = if a==v then b else a
+
+{-Función que verifica, mediante una lista de aristas, si una gráfica tiene un ciclo.
+Utiliza recursión de cola, la primera lista es la que recibe (de aristas), la segunda es donde va guardando
+las aristas que ha visitado y la tercera es una pila de los vértices que va visitando-}
+tieneCiclo_cola::[(V,V)]->[(V,V)]->[V]->Bool
+tieneCiclo_cola [] _ _ = False
+tieneCiclo_cola _ _ [] = False
+tieneCiclo_cola input current ver = if (estaEnLista (head ver) input) then
+                                    let temp = primerArista (head ver) input
+                                        input2 = delete temp input
+                                        v2 = compl (head ver) temp
+                                    in  if estaEnLista v2 current then True
+                                        else tieneCiclo_cola input2 (temp:current) (v2:ver)
+                                    else tieneCiclo_cola input current (tail ver)
+                                    
+
+--Función que recibe una permutación de vértices de una gráfica y decide si vi es adyacente a vi+1.
+sonAdyacentes::[(V,V)]->[V]->Bool
+sonAdyacentes ar [] = True
+sonAdyacentes ar ver = (elem (head ver,last ver) ar || elem (last ver,head ver) ar) && sonAd ar ver where
+                       sonAd arist [] = True
+                       sonAd arist [e] = True
+                       sonAd arist (x:xs) = let v2 = head xs
+                                            in if (elem (x,v2) arist) || (elem (v2,x) arist) then
+                                                  sonAd arist xs
+                                            else False
+
+--Funciones de la tarea------------------------------------------------------------------------------------------------
+
+--Vertices de corte
+vertices_corte::Graph->[V]
+vertices_corte graf = filter (esvertDeCorte graf) (vert graf)
+
+--Aristas de corte
+aristas_corte::Graph->[(V,V)]
+aristas_corte graf = filter (esarDeCorte graf) (edges graf)
+
+--Función que recibe una gráfica, obtiene un conjunto independiente maximal.
+independienteMax::Graph->[V]
+independienteMax graf = let potenciaVert = reverse $ sortOn length (subsequences $ vert graf) --conjunto potencia de los vértices de la gráfica
+                        in  sacaInd graf potenciaVert where
+                            sacaInd g [] = []
+                            sacaInd g (x:xs) = if esIndependiente g x then x else sacaInd g xs
+
+--Función que recibe una gráfica y devuelve un clan maximal
+clanMax::Graph->[V]
+clanMax graf = let potenciaVert = reverse $ sortOn length (subsequences $ vert graf) --conjunto potencia de los vértices de la gráfica
+                        in  sacaClan graf potenciaVert where
+                            sacaClan g [] = []
+                            sacaClan g (x:xs) = if esClan g x then x else sacaClan g xs
+
+--Función que recibe una gráfica y decide si tiene un ciclo.
+tieneCiclo::Graph->Bool
+tieneCiclo graf = tieneCiclo_cola (edges graf) [] [(head (vert graf))]
+
+
+--Función que decide si una gráfica tiene un ciclo hamiltoniano.
+hamilton::Graph->Bool
+hamilton g = if not (tieneCiclo g) then False else
+             ham (permutations (vert g)) (edges g) where
+             ham [] _ = False
+             ham (x:xs) ar = if sonAdyacentes ar x then True else
+                             ham xs ar
