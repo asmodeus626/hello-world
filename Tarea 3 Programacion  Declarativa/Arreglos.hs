@@ -27,7 +27,7 @@ arr = Arr f 11 where
                  9 -> 9
                  10 -> 50
                  _ -> error "fuera de índice"
-				 
+
 --Ejemplo de un arreglo
 arr_alg1 = Arr f 10 where 
           f n = case n of
@@ -42,7 +42,7 @@ arr_alg1 = Arr f 10 where
                  8 -> 2
                  9 -> 85
                  _ -> error "fuera de índice"
-				 
+
 --Ejemplo de un arreglo
 arr1 = Arr f 4 where 
           f n = case n of
@@ -51,7 +51,7 @@ arr1 = Arr f 4 where
                  2 -> 24
                  3 -> 27
                  _ -> error "fuera de índice"
-				 
+
 arr_colores = Arr f 21 where 
                      f n = case n of 
                          0 -> "azul"
@@ -76,8 +76,7 @@ arr_colores = Arr f 21 where
                          19 -> "verde"
                          20 -> "azul"
                          _ -> error "fuera de indice"
-						 
-                 
+
 --Para obtener el elemento en la i-ésima posición de un arreglo
 get::Arreglo a->Int->a
 get (Arr f n) i | i>=0 && i < n = f i
@@ -103,7 +102,7 @@ elemArr x arr = busca x 0 arr where
 minArr::Ord a=>Arreglo a->Int->Int
 minArr arr i = buscaMin i (i+1) arr where
                buscaMin m_i j arr | j==size arr = m_i
-                                  | otherwise = if get arr m_i < get arr j then buscaMin m_i (j+1) arr else buscaMin j (j+1) arr   								  
+                                  | otherwise = if get arr m_i < get arr j then buscaMin m_i (j+1) arr else buscaMin j (j+1) arr  
 
 --Intercambia los elementos en la posición 'i' y 'j' de un arreglo.
 swap::Arreglo a->Int->Int->Arreglo a
