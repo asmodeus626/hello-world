@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb, amsmath, amsbsy} % simbolitos
+\usepackage{upgreek} % para poner letras griegas sin cursiva
+\usepackage{cancel} % para tachar
+\usepackage{mathdots} % para el comando \iddots
+\usepackage{mathrsfs} % para formato de letra
+\usepackage{stackrel} % para el comando \stackbin
+\usepackage{dsfont} % para conjuntos de números.
+\title{Tarea 3 \\ Programacion Declarativa}
+\author{Palacios Gómez Esnesto Rubén \\ \ Peto Gutierrez Emanuel}
+\begin {document}
+	\maketitle
+	\begin{flushleft}
+
+	Parte Practica Demostracion de que la definicion de arreglo cumple las propiedades functoriales \\ 
+	Demostracion de que preserva identidades \\ 
+	fmap (id) (Arr f n) =  (Arr $ (\lambda x .(id (f x)))$  n)  = (Arr $(\lambda x . (f x))$ n) 
+	como f e una funcion que recive un entero y regresa algo de tipo a cuando se le pasa x como siempre se aplica f entonces el resultado para toda x de la funcion $(\lambda x . (f x))$
+	es lo que nos de la funcion f que es $(\lambda y . (f' y))$ por lo que podemos decir que 
+    = (Arr f n) =  id (Arr f n) \\ \ \\
+    Demostracion de que preserva composiciones \\ 
+    fmap (h . g) (Arr f n) = (Arr $ (\lambda x .((h.g)(f x)))$  n) = (Arr $ (\lambda x .((h (g (f x))))$  n) = fmap h (Arr $ (\lambda x .(g(f x)))$  n) = fmap h (fmap g (Arr f n))
+	\end{flushleft}
+
+
+
+\end {document}
+	
