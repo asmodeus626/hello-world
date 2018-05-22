@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amssymb, amsmath, amsbsy} % simbolitos
+\usepackage{upgreek} % para poner letras griegas sin cursiva
+\usepackage{cancel} % para tachar
+\usepackage{mathdots} % para el comando \iddots
+\usepackage{mathrsfs} % para formato de letra
+\usepackage{stackrel} % para el comando \stackbin
+\usepackage{dsfont} % para conjuntos de números.
+\usepackage{multirow} % para tablas
+\usepackage{synttree}
+\title{Tarea 4 \\Programación declarativa}
+\author{Peto Gutierrez Emmanuel \\ Ernesto Rubén Palacios Gómez}
+\begin {document}
+\maketitle
+
+1.- Por definición $a \leq b$ implica que $\exists c \in  \mathbb{N}$ tal que $a+c=b$.\\
+
+Voy a etiquetar las flechas de manera única con una terna, de forma que a la flecha $a \xrightarrow{f} b$ le corresponde la terna $f=(a,b,c)$. Por ejemplo $id_{a}=(a,a,0)$ o si $b=s(a)$ entonces a la flecha $a \rightarrow b$ le corresponde $(a,b,1)$. La composición se definirá así: Si tenemos que $a \leq b$ y $b \leq d$ y tenemos que $a+c=b$ y $b+e=d$, entonces $(b,d,e) \circ (a,b,c) = (a,d,e+c)$. La primera entrada de la terna de la izquierda debe ser igual a la segunda entrada de la terna de la derecha.\\
+
+Veremos que se cumple la asociatividad y la identidad por la izquierda y derecha.\\
+
+\textbf{Asociatividad}: Sean $a,b,c,d \in \mathbb{N}$ tal que $a \leq b \leq c \leq d$. Sean $f,g,h$ flechas tal que $a \xrightarrow{f} b, b \xrightarrow{g} c, c \xrightarrow{h} d$, donde $f=(a,b,x), g=(b,c,y), h=(c,d,z)$.\\ $g \circ f = (a,c,x+y)$ \\ $h \circ g = (b,d,y+z)$ \\
+Luego, $h \circ (g \circ f) = (a,d,x+y+z) = (h \circ g) \circ f \blacksquare$ \\
+
+\textbf{Identidad izquierda}: $id_{b} \circ f$ donde $a \xrightarrow{f} b.$ \\ $(b,b,0) \circ (a,b,c)=(a,b,c+0)=(a,b,c) = f \blacksquare$ \\
+
+\textbf{Identidad derecha}: $f \circ id_{a} = (a,b,c) \circ (a,a,0)=(a,b,c+0)=(a,b,c)=f \blacksquare$ \\
+
+Un funtor $F: \mathbb{N} \rightarrow \mathbb{N}$ podría ser la función sucesor definida así: \\
+$F(a)=S(a)$ \\
+$F(a,b,c)=(S(a),S(b),c)$ \\ \ \\
+
+2.- Sean $f:x \rightarrow y, g:y \rightarrow z$ funciones de Haskell y $x,y,z$ tipos de Haskell. \\ $g \circ f:x \rightarrow z$. \\ $F(x)=a \rightarrow x$ \\ $F(y)=a \rightarrow y$ \\ $F(z)=a \rightarrow z$    \\ $F(f) = F(x) \rightarrow F(y) = (a \rightarrow x) \rightarrow (a \rightarrow y)$ \\ $F(g) = F(y) \rightarrow F(z) = (a \rightarrow y) \rightarrow (a \rightarrow z)$ \\ $ F(g \circ f) = (a \rightarrow x)     \rightarrow (a \rightarrow z) = F(g) \circ F(f) \blacksquare$ Vemos que preserva la composición.
+\end {document}
