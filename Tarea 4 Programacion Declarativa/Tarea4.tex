@@ -11,6 +11,7 @@
 \usepackage{dsfont} % para conjuntos de números.
 \usepackage{multirow} % para tablas
 \usepackage{synttree}
+\usepackage[all]{xy}
 \title{Tarea 4 \\Programación declarativa}
 \author{Peto Gutierrez Emmanuel \\ Ernesto Rubén Palacios Gómez}
 \begin {document}
@@ -33,5 +34,66 @@ Un funtor $F: \mathbb{N} \rightarrow \mathbb{N}$ podría ser la función sucesor
 $F(a)=S(a)$ \\
 $F(a,b,c)=(S(a),S(b),c)$ \\ \ \\
 
-2.- Sean $f:x \rightarrow y, g:y \rightarrow z$ funciones de Haskell y $x,y,z$ tipos de Haskell. \\ $g \circ f:x \rightarrow z$. \\ $F(x)=a \rightarrow x$ \\ $F(y)=a \rightarrow y$ \\ $F(z)=a \rightarrow z$    \\ $F(f) = F(x) \rightarrow F(y) = (a \rightarrow x) \rightarrow (a \rightarrow y)$ \\ $F(g) = F(y) \rightarrow F(z) = (a \rightarrow y) \rightarrow (a \rightarrow z)$ \\ $ F(g \circ f) = (a \rightarrow x)     \rightarrow (a \rightarrow z) = F(g) \circ F(f) \blacksquare$ Vemos que preserva la composición.
+2.- Sean $f:x \rightarrow y, g:y \rightarrow z$ funciones de Haskell y $x,y,z$ tipos de Haskell. \\ $g \circ f:x \rightarrow z$. \\ $F(x)=a \rightarrow x$ \\ $F(y)=a \rightarrow y$ \\ $F(z)=a \rightarrow z$    \\ $F(f) = F(x) \rightarrow F(y) = (a \rightarrow x) \rightarrow (a \rightarrow y)$ \\ $F(g) = F(y) \rightarrow F(z) = (a \rightarrow y) \rightarrow (a \rightarrow z)$ \\ $ F(g \circ f) = (a \rightarrow x)     \rightarrow (a \rightarrow z) = F(g) \circ F(f) \blacksquare$ Vemos que preserva la composición.\\
+
+Sea $id_{x} = x \rightarrow x$ donde x es un tipo.\\
+$F(x)=a \rightarrow x$\\
+$F(id_{x})= (a \rightarrow x) \rightarrow (a \rightarrow x) = id_{F(x)} \blacksquare$ Preserva la identidad. \\
+
+3.- Sean $f,g,id_{x}$ definidos como en (2).\\
+$F_{1} (x)=(a,b) \rightarrow x$\\
+$F_{1} (y)=(a,b) \rightarrow y$\\
+$F_{1} (z)=(a,b) \rightarrow z$\\
+$F_{1} (f)=((a,b) \rightarrow x) \rightarrow ((a,b) \rightarrow y)$\\
+$F_{1} (g)=((a,b) \rightarrow y) \rightarrow ((a,b) \rightarrow z)$\\
+$F_{1} (g \circ f)=((a,b) \rightarrow x) \rightarrow ((a,b) \rightarrow z)$\\
+$F_{1}(g) \circ F_{1}(f)=((a,b) \rightarrow x) \rightarrow ((a,b) \rightarrow z)=F_{1} (g \circ f) \blacksquare$ Preserva la composición\\
+$F_{1} (id_{x}) = ((a,b) \rightarrow x) \rightarrow ((a,b) \rightarrow x)=id_{F_{1}(x)} \blacksquare$ Preserva identidades.\\
+
+$F_{2} (f) = (a \rightarrow (b \rightarrow x)) \rightarrow (a \rightarrow (b \rightarrow y))$\\
+$F_{2} (g) = (a \rightarrow (b \rightarrow y)) \rightarrow (a \rightarrow (b \rightarrow z))$\\
+$F_{2} (g \circ f) = (a \rightarrow (b \rightarrow x)) \rightarrow (a \rightarrow (b \rightarrow z))$\\
+$F_{2} (g) \circ F_{2} (f) = (a \rightarrow (b \rightarrow x)) \rightarrow (a \rightarrow (b \rightarrow z)) \blacksquare$ Preserva la composición.\\
+$F_{2} (id_{x}) = (a \rightarrow (b \rightarrow x)) \rightarrow (a \rightarrow (b \rightarrow x)) = id_{F_{2}(x)} \blacksquare$ Preserva la identidad.\\
+
+4.- \\
+
+\[
+\xymatrix{
+F_{1}(a) \ar[d]^{\eta_{1a}} \ar[r]^{F_{1}(f)} & F_{1}(b) \ar[d]^{\eta_{1b}} \\
+F_{2}(a) \ar[r]^{F_{2}(f)} \ar[u]^{\eta_{2a}} & F_{2}(b) \ar[u]^{\eta_{2b}}
+}
+\]
+
+Las composiciones $\eta_{1} \circ \eta_{2}$ y $\eta_{2} \circ \eta_{1}$ son funciones identidad, entonces solo se cumple la propiedad $\eta_{1} \circ \eta_{2} = F_{2}$ y $\eta_{2} \circ \eta_{1} = F_{1}$ si $F_{1}$ y $F_{2}$ son funtores identidad.\\
+
+5.-\\ $\eta : [] \Rightarrow []$ \\ $\eta_{a} : [a] \rightarrow [a]$ \\ $xs \mapsto sort \; xs$\\
+
+$\eta$ no es una transformación natural. Esto se debe a que sort solo se puede aplicar a listas cuyos elementos sean comparables, es decir, que tengan definidas las operaciones $<,>,=$. Supongamos que tenemos una función de Haskell $f:Int \rightarrow Bool$ que decide si un número es par. Supongamos que $\ell$ es una lista de tipo $Int$, la operación $map \; f \; (sort \; \ell)$ está definida, pero $sort \; (map \; f \; \ell)$ no está definida, porque no podemos ordenar tipo $Bool$. Entonces $(map \; f) \; (sort \; \ell) \neq sort \; ((map \; f) \; \ell)$. \\
+
+6.-\\
+Definamos la función $Maybe\_fun$ así:\\
+$Maybe\_fun :: (a \rightarrow b) \rightarrow Maybe \; a$\\
+$Maybe\_fun \; f \; Nothing = Nothing$\\
+$Maybe\_fun \; f \; (Just \; a) = Just \; (f \; a)$\\
+
+Utilizaré el término $f(x)$ para describir el resultado de aplicar $f$ a $x$ en vez de $f \; x$, como sería en Haskell. Sea $f:a \rightarrow b$, veremos que el siguiente diagrama conmuta:
+
+\[
+\xymatrix{
+Maybe \; a \ar[d]^{\eta_{a}} \ar[r]^{Maybe\_fun f} & Maybe \; b \ar[d]^{\eta_{b}} \\
+[a] \ar[r]^{map \; f} & [b]
+}
+\]
+\\
+
+Caso $Nothing$:\\
+$map\;f\;(\eta_{a}\;Nothing)=map\;f\;[]=[]$ \\
+$\eta_{b}\;(Maybe\_fun\;f\;Nothing)= \eta_{b}\;Nothing=[]$ \\
+Por lo tanto $map\;f\;(\eta_{a}\;Nothing)=\eta_{b}\;(Maybe\_fun\;f\;Nothing) \blacksquare$\\
+
+Caso $x$:\\
+$map\;f\;(\eta_{a}\;(Just\;x))=map\;f\;[x]=[f(x)]$\\
+$\eta_{b}\;(Maybe\_fun\;f\;(Just\;x))=\eta_{b}\;(Just\;f(x))=[f(x)]$\\
+Por lo tanto $map\;f\;(\eta_{a}\;(Just\;x))=\eta_{b}\;(Maybe\_fun\;f\;(Just\;x)) \blacksquare$
 \end {document}
