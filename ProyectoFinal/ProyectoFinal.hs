@@ -66,6 +66,7 @@ comeSolo = do
                     let sol = (solucion lis)
                     if (null sol)
                         then do putStrLn "Ese tablero no tiene solución"
+				escribe_archivo lis sol
                                 continuar;
 
                         else do despliega_solucion lis sol
@@ -87,6 +88,7 @@ comeSolo = do
                     let sol = (solucion tablero_c)
                     if (null sol)
                         then do putStrLn "Ese tablero no tiene solución"
+				escribe_archivo tablero_c sol
                                 continuar;
 
                         else do despliega_solucion tablero_c sol
@@ -104,6 +106,7 @@ comeSolo = do
 escribe_archivo :: Tablero -> Solucion -> IO()
 escribe_archivo tablero sol = do 
                                 writeFile "Comesolo/soluciones.sol" ((show sol) ++ "\n" ++ (soluciona_tablero tablero sol))
+                                writeFile "Comesolo/dist/soluciones.sol" ((show sol) ++ "\n" ++ (soluciona_tablero tablero sol))
 
 
 
@@ -127,7 +130,6 @@ despliega_solucion tablero sol  = do
                                  putStrLn "La solucion es la siguiente:"
                                  putStrLn (imprime_solucion sol)
                                  putStrLn "la pareja x->y indica que la bola en el lugar x se mueve a la posicion y"
-                                 putStrLn "escribiendo archivo..."
                                  escribe_archivo tablero sol
                                  imprime_solucion2 tablero sol
                                  

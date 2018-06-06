@@ -25,7 +25,7 @@ public class Comesolo extends PApplet{
     int tam = 600; //Tamaño de un lado de la ventana.
     TableroAbs currentTab; //El tablero actual
     Jugada currentJug; //La jugada actual
-    LinkedList<Point> desp; //Esta lista va a ver el desplazamiento de una bola.
+    LinkedList<Point> desp = new LinkedList<>(); //Esta lista va a ver el desplazamiento de una bola.
     int d=0; //Esta variable va a iterar sobre la lista de desplazamiento.
     int j=0; //Esta variable itera sobre la lista de jugadas.
     
@@ -38,6 +38,9 @@ public class Comesolo extends PApplet{
     //Configuración inicial del programa.
     @Override
     public void setup(){
+        desp.clear();
+        d=0;
+        j=0;
         frameRate(20); //cuadros por segundo.
         background (255,255,255); //Define el color de fondo.
         lineas = new LinkedList();
@@ -50,12 +53,22 @@ public class Comesolo extends PApplet{
         llenaTableros();
         llenaBolas();
         currentTab = tableros.get(0); //Iniciamos con el tablero 0
-        currentJug = jugadas.get(0); //Iniciamos con la jugada 0
-        desp = trayectoria(cbolas.get(currentJug.posIni),cbolas.get(currentJug.posFin));
+        if(!jugadas.isEmpty()){
+            currentJug = jugadas.get(0); //Iniciamos con la jugada 0
+            desp = trayectoria(cbolas.get(currentJug.posIni),cbolas.get(currentJug.posFin));
+        }
+        
+    }
+    
+    public void mousePressed(){
+        if (encima_rect){
+            setup();
+        }
     }
     
     @Override
     public void draw(){
+        update(mouseX, mouseY);
         fill(121,85,61);
         int lado = tam-100; //Un lado del triángulo 2
         int h1 = (int)(tam*Math.sqrt(3)/2); //Altura del triangulo 1
@@ -70,8 +83,7 @@ public class Comesolo extends PApplet{
         for(Point p:hoyos){
             ellipse(p.x,p.y,50,50);
         }
-        
-        //Dibujamos las bolas
+                    //Dibujamos las bolas
         for(int i=0;i<cbolas.size();i++){
             if(currentTab.tablero.get(i)==1){
                 fill(134,115,161);
@@ -79,29 +91,65 @@ public class Comesolo extends PApplet{
                 ellipse(p.x,p.y,50,50);
             }
         }
-        
-        if(d<=20){ //Si el desplazamiento no ha terminado.
-            if(d==10){
-                currentTab.tablero.set(currentJug.posMid,0);
-            }
-            
-            desplaza(currentJug.posIni);
-            d++;
-        }else{
-            if(j<jugadas.size()-1){
-                j++; //Paso a la siguiente jugada
-                d = 0; //Reinicio el iterador de desplazamiento
-                currentJug = jugadas.get(j);
-                currentTab = tableros.get(j);
-                desp = trayectoria(hoyos.get(currentJug.posIni),hoyos.get(currentJug.posFin));
-                reiniciaBolas();
+        if (!desp.isEmpty()){
+
+
+            if(d<=20){ //Si el desplazamiento no ha terminado.
+                if(d==10 && currentJug != null ){
+
+                    currentTab.tablero.set(currentJug.posMid,0);
+                }
+
+                if(currentJug != null){
+                    desplaza(currentJug.posIni);            
+                }
+
+                d++;
+            }else{
+                if(j<jugadas.size()-1){
+
+                    j++; //Paso a la siguiente jugada
+                    d = 0; //Reinicio el iterador de desplazamiento
+                    currentJug = jugadas.get(j);
+                    currentTab = tableros.get(j);
+                    desp = trayectoria(hoyos.get(currentJug.posIni),hoyos.get(currentJug.posFin));
+                    reiniciaBolas();
+                }
             }
         }
+        
+        
+        fill(120,40,140);
+        rect(rectX , rectY , rect_ancho , rect_alto);
+        fill(255,255,255);
+        text("Reiniciar",45,60);
+    }
+    
+    public boolean encimaRectangulo(int x , int y , int ancho , int alto){
+        if (mouseX >= x && mouseX <= x+ancho && 
+                mouseY >= y && mouseY <= y+alto) {
+              return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public int rectX = 30;
+    public int rectY = 30;
+    public int rect_ancho = 80;
+    public int rect_alto = 50;
+    public boolean encima_rect = false;
+    public void update (int x , int y){
+        encima_rect =this.encimaRectangulo(rectX, rectY, rect_ancho, rect_alto);
     }
     
     //Cambia la posición de una bola
     public void desplaza(int b){
+        fill(255,0,0);
+        ellipse(cbolas.get(b).x,cbolas.get(b).y,50,50);
         cbolas.get(b).setLocation(desp.get(d));
+                   
+
     }
     
     //En esta parte le damos a todas las bolas su posición original.
@@ -129,13 +177,16 @@ public class Comesolo extends PApplet{
      */
     public void llenaJugadas(){
         String temp = lineas.get(0); //La primera línea es la que contiene las jugadas.
-        temp = temp.substring(2,temp.length()-2);
-        String[] casillas = temp.split("[)][,][(]"); //Separamos con esa expresión regular.
-        
-        //En esta parte agregamos las jugadas.
-        for(int i=0;i<casillas.length;i++){
-            Jugada j1 = new Jugada(casillas[i]);
-            jugadas.add(j1);
+        if ( !temp.equals("[]")){
+            temp = temp.substring(2,temp.length()-2);
+            String[] casillas = temp.split("[)][,][(]"); //Separamos con esa expresión regular.
+
+            //En esta parte agregamos las jugadas.
+            for(int i=0;i<casillas.length;i++){
+                Jugada j1 = new Jugada(casillas[i]);
+                jugadas.add(j1);
+            }
+
         }
     }
     
