@@ -5,25 +5,23 @@ import Data.List
 import Data.Char
 
 
-
 type Pos_ini = Int
 type Pos_fin = Int
-type Tablero = [Int] -- la lista representa las posiciones donde hay una pelota en el come solo trianuglar
-type Jugada = (Int , Int , Tablero) -- la jugada es (a,b) a es de donde proviene la bola y b  el destino d eesta
-type Solucion = [(Int,Int)] -- la solucion es un conjunto de jugadas que haga que en el tablero tenga solo una bola
-
+type Pos_mid = Int
+type Tablero = [Int] -- la lista representa las posiciones donde hay una pelota en el come solo trianuglar.
+type Jugada = (Pos_ini , Pos_mid , Pos_fin , Tablero) -- En la jugada (a,b,c,T) a es de donde proviene la bola y c el destino de esta. b es la bola que se va a comer.
+type Solucion = [(Pos_ini , Pos_mid , Pos_fin)] -- la solucion es una lista de jugadas que haga que en el tablero quede solo una bola.
 type NodoSolucion = (Solucion , [Jugada])
 
-ejem2 = verifica_jugadas (jugadas [1,2]) []
-ejem3 = [([],(jugadas [4,7]))]
-
+-- Toma un tablero y devuelve la solución de este siempre que exista.
 solucion :: Tablero -> Solucion
 solucion tablero =  solucion_aux [([],(jugadas tablero))]
-            
 
+-- Recibe una lista de jugadas, y una solución parcial. Si en la lista hay un nodo final lo agrega al conjunto solución.
 verifica_jugadas :: [Jugada] -> Solucion -> Solucion
 verifica_jugadas [] _ = []
-verifica_jugadas (actual@(pi,pf,_):xs) sol = if esFinal actual then sol++[(pi,pf)] else verifica_jugadas xs sol
+verifica_jugadas (actual@(pi,pm,pf,_):xs) sol = if esFinal actual then sol++[(pi,pm,pf)] else verifica_jugadas xs sol
+
 
 solucion_aux :: [NodoSolucion] -> Solucion
 solucion_aux [] = []
@@ -46,8 +44,9 @@ imprime_tablero x = mapM_ putStrLn $ ((flip centro (((15*70)`div`10)) . unwords)
 
 imprime_solucion ::  Solucion -> String
 imprime_solucion [] = ""
-imprime_solucion ((x,y):xs) = (show x) ++ " -> " ++ (show y) ++  " , " ++ (imprime_solucion xs)
+imprime_solucion ((x,_,y):xs) = (show x) ++ " -> " ++ (show y) ++  " , " ++ (imprime_solucion xs)
 
+--Función que simula el juego de come solo. Se llama en la función principal.
 comeSolo = do
               putStrLn "Ingresa una de las siguinetes opciones :";
               putStrLn "1 .- Si quieres generar un tablero aleatorio";
@@ -69,11 +68,7 @@ comeSolo = do
                         then do putStrLn "Ese tablero no tiene solución"
                                 continuar;
 
-                        else do putStrLn "Los 0 indican en donde no hay bolas"
-                                putStrLn "La solucion es la siguiente:"
-                                putStrLn (imprime_solucion sol )
-                                putStrLn "la pareja x->y indica que la bola en el lugar x se mueve a la posicion y"
-                                continuar;
+                        else do despliega_solucion lis sol
 
               else do
                 if (opcion == "2")
@@ -87,22 +82,15 @@ comeSolo = do
                     let tablero_c = construye_tablero  $ trim $ split_c tablero ','
                     when (elem (-1) tablero_c)
                          (do putStrLn "Error: caracter no encontrado"; comeSolo; exitSuccess);
-                    putStrLn "El tablero elejido es el siguienete:"
+                    putStrLn "El tablero elegido es el siguienete:"
                     imprime_tablero (crea_tablero tablero_c)
                     let sol = (solucion tablero_c)
                     if (null sol)
                         then do putStrLn "Ese tablero no tiene solución"
                                 continuar;
 
-                        else do putStrLn "Los 0 indican en donde no hay bolas"
-                                putStrLn "La solucion es la siguiente:"
-                                putStrLn (imprime_solucion sol )
-                                putStrLn "la pareja x->y indica que la bola en el lugar x se mueve a la posicion y"
-                                continuar;
-
-
-
-
+                        else do despliega_solucion tablero_c sol
+                               
                 else do
                     if (opcion == "3")
                         then do 
@@ -111,7 +99,38 @@ comeSolo = do
                             putStrLn "Error: opcion invalida";
                             comeSolo;
                             exitSuccess;
+                            
 
+escribe_archivo :: Tablero -> Solucion -> IO()
+escribe_archivo tablero sol = do 
+                                writeFile "Comesolo/soluciones.sol" ((show sol) ++ "\n" ++ (soluciona_tablero tablero sol))
+
+
+
+soluciona_tablero :: Tablero -> Solucion -> String
+soluciona_tablero  tablero [] = show tablero ++ "\n"
+soluciona_tablero  tablero ((ini, mid, fin):xs) = (show tablero) ++ "\n" ++ (soluciona_tablero (delete ini (delete mid (fin:tablero))) xs)
+
+imprime_solucion2 :: Tablero -> Solucion -> IO()
+imprime_solucion2 tablero [] = do
+                               imprime_tablero $ crea_tablero tablero 
+                               continuar
+imprime_solucion2 tablero ((ini , mid , fin):ys) = do
+                                                    imprime_tablero (crea_tablero tablero);
+                                                    let tab_actual = delete ini (delete mid (fin:tablero))
+                                                    putStrLn $ centro (take 75  (repeat '-')) ((15*70)`div`10);
+                                                    imprime_solucion2 tab_actual ys
+
+
+despliega_solucion tablero sol  = do
+                                 putStrLn "Los 0 indican en donde no hay bolas"
+                                 putStrLn "La solucion es la siguiente:"
+                                 putStrLn (imprime_solucion sol)
+                                 putStrLn "la pareja x->y indica que la bola en el lugar x se mueve a la posicion y"
+                                 putStrLn "escribiendo archivo..."
+                                 escribe_archivo tablero sol
+                                 imprime_solucion2 tablero sol
+                                 
 
 construye_tablero :: [String] -> [Int]
 construye_tablero [] = []
@@ -165,19 +184,21 @@ crea_tablero x = crea_tablero_aux x tablero
                                                       crea_tablero_aux2 x (y:ys) = if (elem y x) then y:(crea_tablero_aux2 x ys) else 0:(crea_tablero_aux2 x ys)          
 
 
-
+-- Función que verifica si un estado del tablero es final. Es decir, si solo tiene una bola.
 esFinal :: Jugada -> Bool
-esFinal (_,_,tablero) = (length tablero) == 1
- 
+esFinal (_,_,_,tablero) = (length tablero) == 1
+
+
 sucesor_jugadas :: [Jugada] -> Solucion -> [NodoSolucion]
 sucesor_jugadas [] _ = []
-sucesor_jugadas ((pi,pf,tablero):xs) solucion = [(solucion++[(pi,pf)], (jugadas tablero))] ++ sucesor_jugadas xs solucion 
+sucesor_jugadas ((pi,pm,pf,tablero):xs) solucion = [(solucion++[(pi,pm ,pf)], (jugadas tablero))] ++ sucesor_jugadas xs solucion
 
+-- Dado un estado del tablero, devuelve un conjunto de las jugadas posibles.
 jugadas :: Tablero -> [Jugada]
 jugadas tablero = jugadas_aux tablero tablero
                 where jugadas_aux [] _ = []
                       jugadas_aux (x:xs) tablero = jugadas_posibles 0 x tablero ++ jugadas_aux xs tablero
-    
+
 
 jugadas_posibles  :: Int -> Int -> Tablero -> [Jugada]
 jugadas_posibles _ _ [] = []
@@ -186,85 +207,85 @@ jugadas_posibles it i tablero | (i == 1) = let  c1 = 2
                                                 c3 = 4
                                                 c4 = 6
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else []
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else []
                               | (i == 2) = let  c1 = 4
                                                 c2 = 5
                                                 c3 = 7
                                                 c4 = 9
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 3) = let  c1 = 5
                                                 c2 = 6
                                                 c3 = 8
                                                 c4 = 10
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 5) = let  c1 = 8
                                                 c2 = 9
                                                 c3 = 12
                                                 c4 = 14
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 7) = let  c1 = 8
                                                 c2 = 4
                                                 c3 = 9
                                                 c4 = 2
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 8) = let  c1 = 5
                                                 c2 = 9
                                                 c3 = 3
                                                 c4 = 10
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 9) = let  c1 = 8
                                                 c2 = 5
                                                 c3 = 7
                                                 c4 = 2
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 10) = let c1 = 6
                                                 c2 = 9
                                                 c3 = 3
                                                 c4 = 8
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 11) = let c1 = 7
                                                 c2 = 12
                                                 c3 = 4
                                                 c4 = 13
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 12) = let c1 = 13
                                                 c2 = 8
                                                 c3 = 14
                                                 c4 = 5
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 14) = let c1 = 9
                                                 c2 = 13
                                                 c3 = 5
                                                 c4 = 12
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 15) = let c1 = 10
                                                 c2 = 14
                                                 c3 = 6
                                                 c4 = 13
                                             in case it of 
-                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c3 tablero)) then [(i,c1,c3,[ x | x<-tablero , x/=c1 , x/= i]++[c3] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c4 tablero)) then [(i,c2,c4,[ x | x<-tablero , x/=c2 , x/= i]++[c4] )] else [] 
                               | (i == 4) = let  c1 = 8
                                                 c2 = 7
                                                 c3 = 5
@@ -274,10 +295,10 @@ jugadas_posibles it i tablero | (i == 1) = let  c1 = 2
                                                 c7 = 6
                                                 c8 = 1
                                             in case it of
-                                                0 -> if (elem c1 tablero) && (not (elem c5 tablero)) then [(i,c5,[ x | x<-tablero , x/=c1 , x/= i]++[c5] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c6 tablero)) then [(i,c6,[ x | x<-tablero , x/=c2 , x/= i]++[c6] )] ++ (jugadas_posibles 2 i tablero) else (jugadas_posibles 2 i tablero)
-                                                2 -> if (elem c3 tablero) && (not (elem c7 tablero)) then [(i,c7,[ x | x<-tablero , x/=c3 , x/= i]++[c7] )] ++ (jugadas_posibles 3 i tablero) else (jugadas_posibles 3 i tablero)
-                                                3 -> if (elem c4 tablero) && (not (elem c8 tablero)) then [(i,c8,[ x | x<-tablero , x/=c4 , x/= i]++[c8] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c5 tablero)) then [(i,c1,c5,[ x | x<-tablero , x/=c1 , x/= i]++[c5] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c6 tablero)) then [(i,c2,c6,[ x | x<-tablero , x/=c2 , x/= i]++[c6] )] ++ (jugadas_posibles 2 i tablero) else (jugadas_posibles 2 i tablero)
+                                                2 -> if (elem c3 tablero) && (not (elem c7 tablero)) then [(i,c3,c7,[ x | x<-tablero , x/=c3 , x/= i]++[c7] )] ++ (jugadas_posibles 3 i tablero) else (jugadas_posibles 3 i tablero)
+                                                3 -> if (elem c4 tablero) && (not (elem c8 tablero)) then [(i,c4,c8,[ x | x<-tablero , x/=c4 , x/= i]++[c8] )] else [] 
                               | (i == 6) = let  c1 = 9
                                                 c2 = 10
                                                 c3 = 5
@@ -287,10 +308,10 @@ jugadas_posibles it i tablero | (i == 1) = let  c1 = 2
                                                 c7 = 4
                                                 c8 = 1
                                             in case it of
-                                                0 -> if (elem c1 tablero) && (not (elem c5 tablero)) then [(i,c5,[ x | x<-tablero , x/=c1 , x/= i]++[c5] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c6 tablero)) then [(i,c6,[ x | x<-tablero , x/=c2 , x/= i]++[c6] )] ++ (jugadas_posibles 2 i tablero) else (jugadas_posibles 2 i tablero)
-                                                2 -> if (elem c3 tablero) && (not (elem c7 tablero)) then [(i,c7,[ x | x<-tablero , x/=c3 , x/= i]++[c7] )] ++ (jugadas_posibles 3 i tablero) else (jugadas_posibles 3 i tablero)
-                                                3 -> if (elem c4 tablero) && (not (elem c8 tablero)) then [(i,c8,[ x | x<-tablero , x/=c4 , x/= i]++[c8] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c5 tablero)) then [(i,c1,c5,[ x | x<-tablero , x/=c1 , x/= i]++[c5] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c6 tablero)) then [(i,c2,c6,[ x | x<-tablero , x/=c2 , x/= i]++[c6] )] ++ (jugadas_posibles 2 i tablero) else (jugadas_posibles 2 i tablero)
+                                                2 -> if (elem c3 tablero) && (not (elem c7 tablero)) then [(i,c3,c7,[ x | x<-tablero , x/=c3 , x/= i]++[c7] )] ++ (jugadas_posibles 3 i tablero) else (jugadas_posibles 3 i tablero)
+                                                3 -> if (elem c4 tablero) && (not (elem c8 tablero)) then [(i,c4,c8,[ x | x<-tablero , x/=c4 , x/= i]++[c8] )] else [] 
                               | (i == 13) = let c1 = 12
                                                 c2 = 14
                                                 c3 = 8
@@ -300,8 +321,12 @@ jugadas_posibles it i tablero | (i == 1) = let  c1 = 2
                                                 c7 = 4
                                                 c8 = 6
                                             in case it of
-                                                0 -> if (elem c1 tablero) && (not (elem c5 tablero)) then [(i,c5,[ x | x<-tablero , x/=c1 , x/= i]++[c5] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
-                                                1 -> if (elem c2 tablero) && (not (elem c6 tablero)) then [(i,c6,[ x | x<-tablero , x/=c2 , x/= i]++[c6] )] ++ (jugadas_posibles 2 i tablero) else (jugadas_posibles 2 i tablero)
-                                                2 -> if (elem c3 tablero) && (not (elem c7 tablero)) then [(i,c7,[ x | x<-tablero , x/=c3 , x/= i]++[c7] )] ++ (jugadas_posibles 3 i tablero) else (jugadas_posibles 3 i tablero)
-                                                3 -> if (elem c4 tablero) && (not (elem c8 tablero)) then [(i,c8,[ x | x<-tablero , x/=c4 , x/= i]++[c8] )] else [] 
+                                                0 -> if (elem c1 tablero) && (not (elem c5 tablero)) then [(i,c1,c5,[ x | x<-tablero , x/=c1 , x/= i]++[c5] )] ++ (jugadas_posibles 1 i tablero) else (jugadas_posibles 1 i tablero)
+                                                1 -> if (elem c2 tablero) && (not (elem c6 tablero)) then [(i,c2,c6,[ x | x<-tablero , x/=c2 , x/= i]++[c6] )] ++ (jugadas_posibles 2 i tablero) else (jugadas_posibles 2 i tablero)
+                                                2 -> if (elem c3 tablero) && (not (elem c7 tablero)) then [(i,c3,c7,[ x | x<-tablero , x/=c3 , x/= i]++[c7] )] ++ (jugadas_posibles 3 i tablero) else (jugadas_posibles 3 i tablero)
+                                                3 -> if (elem c4 tablero) && (not (elem c8 tablero)) then [(i,c4,c8,[ x | x<-tablero , x/=c4 , x/= i]++[c8] )] else [] 
                               | otherwise = []
+
+--Función principal            
+main :: IO ()
+main = do comeSolo
